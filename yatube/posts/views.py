@@ -53,12 +53,12 @@ def profile(request, username):
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    posts_list = Post.objects.select_related('author').filter(author=post.author)
-    posts_count = posts_list.count()
+    pos_list = Post.objects.select_related('author').filter(author=post.author)
+    posts_count = pos_list.count()
     context = {
         'post': post,
         'posts_count': posts_count,
-        'post_list': posts_list
+        'post_list': pos_list
     }
     return render(request, 'posts/post_detail.html', context)
 
