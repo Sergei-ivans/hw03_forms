@@ -1,7 +1,5 @@
 from django.core.paginator import Paginator
 
-from .models import Post
-
 
 def func_paginator(request, queryset):
     paginator = Paginator(queryset, 10)
