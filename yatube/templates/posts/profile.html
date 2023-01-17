@@ -4,18 +4,17 @@
   <div class="container py-5">    
     <h1>Все посты пользователя {{ author }}</h1>
     <h3>Всего постов: {{ post_count }} </h3>   
-    <article>
     {% for post in page_obj  %}
+    <article>
       <ul>
         <li>
           Автор: {{ post.author.get_full_name }}
-          <a href="{% url 'posts:profile' user %}">все посты пользователя</a>
         </li>
         <li>
           Дата публикации: {{ post.pub_date|date:"d E Y"}}
         </li>
       </ul>
-      <p>{{ post.text }} </p>
+      <p>{{ post.text|linebreaks }} </p>
       <a href="{% url 'posts:post_detail' post.id %}">подробная информация </a>
       <p>
       {% if post.group %}
@@ -23,8 +22,8 @@
         {% endif %}   
       </p>
       {% if not forloop.last %}<hr>{% endif %}    
-    {% endfor %}
     </article>
+    {% endfor %}
     {% include 'posts/includes/paginator.html' %}  
   </div>    
 {% endblock %}
