@@ -1,15 +1,9 @@
-from django.core.paginator import Paginator
-
 from django.shortcuts import render, get_object_or_404, redirect
-
-from .models import Post, Group, User
-
 from django.views.generic.base import TemplateView
-
-from .forms import PostForm
-
 from django.contrib.auth.decorators import login_required
 
+from .forms import PostForm
+from .models import Post, Group, User
 from .utils import func_paginator
 
 NUMBER_LAST_ARTICLE = 25
@@ -36,12 +30,11 @@ class JustStaticPage(TemplateView):
     template_name = 'app_name/just_page.html'
 
 
+
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     posts = user.posts.all()
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = func_paginator(request, posts)
     return render(
         request, 'posts/profile.html',
         {'page_obj': page_obj, 'author': user, 'posts': posts.count()}
@@ -59,22 +52,21 @@ def post_detail(request, post_id):
 
 @login_required
 def post_create(request):
+    form = PostForm(request.POST or None)
     if request.method == 'POST':
-        form = PostForm(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
             post.save()
             return redirect('posts:profile', post.author)
         return render(request, 'posts/create_post.html', {"form": form})
-    form = PostForm()
     return render(request, 'posts/create_post.html', {"form": form})
 
 
 @login_required
 def post_edit(request, post_id):
     is_edit = True
-    post = get_object_or_404(Post, pk=post_id)
+    post = get_object_or_404(Post, id=post_id)
     if post.author != request.user:
         return redirect('posts:post_detail', post_id)
     form = PostForm(request.POST or None, instance=post)
