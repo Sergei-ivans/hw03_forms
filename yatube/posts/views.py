@@ -30,7 +30,6 @@ class JustStaticPage(TemplateView):
     template_name = 'app_name/just_page.html'
 
 
-
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     posts = user.posts.all()
